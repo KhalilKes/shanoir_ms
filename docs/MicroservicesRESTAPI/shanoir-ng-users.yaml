@@ -1,0 +1,451 @@
+# Shanoir NG - Import, manage and share neuroimaging data
+# Copyright (C) 2009-2019 Inria - https://www.inria.fr/
+# Contact us on https://project.inria.fr/shanoir/
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see https://www.gnu.org/licenses/gpl-3.0.html
+
+swagger: '2.0'
+info:
+  version: 0.0.1
+  title: Shanoir NG Users Microservice
+  description: Microservice API for Shanoir NG user managment
+produces:
+  - application/json
+paths:
+  /accountrequest:
+    post:
+      operationId: saveNewAccountRequest
+      description: Saves a new user from account request
+      consumes:
+        - application/json
+      parameters:
+        - name: user
+          in: body
+          description: user to create from account request
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: created user from account request
+          schema:
+            $ref: '#/definitions/User'
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '422':
+          description: bad parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /login:
+    post:
+      operationId: login
+      description: Updates login date for an user
+      consumes:
+        - application/json
+      parameters:
+        - name: username
+          in: body
+          description: username of user for login date update
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: login date updated
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /users:
+    get:
+      operationId: findUsers
+      description: Returns all the users
+      responses:
+        '200':
+          description: found users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        '204':
+          description: no user found
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    post:
+      operationId: saveNewUser
+      description: Saves a new user
+      consumes:
+        - application/json
+      parameters:
+        - name: user
+          in: body
+          description: user to create
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: created user
+          schema:
+            $ref: '#/definitions/User'
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '422':
+          description: bad parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  '/users/{userId}':
+    get:
+      operationId: findUserById
+      description: 'If exists, returns the user corresponding to the given id'
+      parameters:
+        - $ref: '#/parameters/userId'
+      responses:
+        '200':
+          description: found user
+          schema:
+            $ref: '#/definitions/User'
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '404':
+          description: no user found
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    put:
+      operationId: updateUser
+      description: Updates a user
+      consumes:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/userId'
+        - name: user
+          in: body
+          description: user to update
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '204':
+          description: user updated
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '422':
+          description: bad parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    delete:
+      operationId: deleteUser
+      description: Deletes a user
+      parameters:
+        - $ref: '#/parameters/userId'
+      responses:
+        '204':
+          description: user deleted
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '404':
+          description: no user found
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  '/users/{userId}/confirmaccountrequest':
+    put:
+      operationId: confirmAccountRequest
+      description: Confirms an account request
+      consumes:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/userId'
+        - name: user
+          in: body
+          description: user to update
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '204':
+          description: user confirmed
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '404':
+          description: no user found
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  '/users/{userId}/denyaccountrequest':
+    delete:
+      operationId: denyAccountRequest
+      description: Denies an account request
+      parameters:
+        - $ref: '#/parameters/userId'
+      responses:
+        '204':
+          description: user deleted
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '404':
+          description: no user found
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /users/extension:
+    put:
+      operationId: requestExtension
+      description: Requests a date extension for current user
+      consumes:
+        - application/json
+      parameters:
+        - name: requestInfo
+          in: body
+          description: request info
+          required: true
+          schema:
+            $ref: '#/definitions/ExtensionRequestInfo'
+      responses:
+        '204':
+          description: request ok
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '404':
+          description: no user found
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /users/search:
+    post:
+      operationId: searchUsers
+      description: Requests users by id list
+      consumes:
+        - application/json
+      parameters:
+        - name: userIds
+          in: body
+          description: user ids
+          required: true
+          schema:
+            $ref: '#/definitions/IdListDTO'
+      responses:
+        '200':
+          description: found users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/IdNameDTO'
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '404':
+          description: no user found
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /roles:
+    get:
+      operationId: findRoles
+      description: Returns all the roles
+      responses:
+        '200':
+          description: found roles
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Role'
+        '204':
+          description: no role found
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+parameters:
+  userId:
+    name: userId
+    in: path
+    description: id of the user
+    required: true
+    type: integer
+    format: int64
+definitions:
+  User:
+    type: object
+    required:
+      - id
+      - accountRequestDemand
+      - canAccessToDicomAssociation
+      - creationDate
+      - email
+      - firstName
+      - lastName
+      - password
+      - role
+      - username
+    properties:
+      id:
+        type: integer
+        format: int64
+      accountRequestDemand:
+        type: boolean
+      accountRequestInfo:
+        $ref: '#/definitions/AccountRequestInfo'
+      canAccessToDicomAssociation:
+        type: boolean
+      creationDate:
+        type: string
+        format: date
+      email:
+        type: string
+      expirationDate:
+        type: string
+        format: date
+      firstName:
+        type: string
+      lastLogin:
+        type: string
+        format: date
+      lastName:
+        type: string
+      password:
+        type: string
+        format: password
+      role:
+        $ref: '#/definitions/Role'
+      teamName:
+        type: string
+      username:
+        type: string
+  AccountRequestInfo:
+    type: object
+    required:
+      - id
+      - contact
+      - function
+      - institution
+      - service
+      - study
+      - work
+    properties:
+      id:
+        type: integer
+        format: int64
+      contact:
+        type: string
+      function:
+        type: string
+      institution:
+        type: string
+      service:
+        type: string
+      study:
+        type: string
+      work:
+        type: string
+  ExtensionRequestInfo:
+    type: object
+    required:
+      - extensionDate
+      - extensionMotivation
+    properties:
+      extensionDate:
+        type: string
+        format: date
+      extensionMotivation:
+        type: string
+  IdListDTO:
+    type: object
+    properties:
+      idList:
+        type: array
+        items:
+          type: integer
+          format: int64
+  IdNameDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+  Role:
+    type: object
+    required:
+      - id
+      - accessLevel
+      - displayName
+      - name
+    properties:
+      id:
+        type: integer
+        format: int64
+      accessLevel:
+        type: integer
+        format: int32
+      displayName:
+        type: string
+      name:
+        type: string
+  ErrorModel:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      details:
+        type: object
+      message:
+        type: string

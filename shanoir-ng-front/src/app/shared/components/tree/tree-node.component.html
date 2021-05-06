@@ -1,0 +1,48 @@
+<!--
+Shanoir NG - Import, manage and share neuroimaging data
+Copyright (C) 2009-2019 Inria - https://www.inria.fr/
+Contact us on https://project.inria.fr/shanoir/
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see https://www.gnu.org/licenses/gpl-3.0.html
+-->
+
+<span class="arrow" (click)="toggle()">
+    <span *ngIf="dataLoading">
+        <div class="fa fa-cog fa-spin"></div>
+    </span>
+    <span *ngIf="hasChildren==true && isOpen"><i class="fas fa-angle-down"></i></span>
+    <span *ngIf="hasChildren==true && !isOpen"><i class="fas fa-angle-right"></i></span>
+    <span *ngIf="hasChildren=='unknown' && !isOpen && !dataLoading"><i class="fas fa-angle-right"></i></span>
+</span>
+<div class="node" [class.clickable-node]="isClickable()" title="{{title}}">
+    <span *ngIf="pictoUrl" (click)="labelClick.emit()" class="picto" [class.clickable]="isClickable()">
+        <img class="picto" src="{{pictoUrl}}" />
+    </span>
+    <span *ngIf="awesome" (click)="labelClick.emit()" class="picto" [class.clickable]="isClickable()">
+        <i class="{{awesome}}"></i>
+    </span>
+    <input #box class="box" type="checkbox" *ngIf="hasBox" [(ngModel)]="value" (change)="chkbxChange.emit(value)" class="clickable" />
+    <input #editableLabel *ngIf="editable" type="text" [(ngModel)]="label" (change)="labelChange.emit(label)" />
+    <span *ngIf="editable && buttonPicto" class="button-picto clickable" (click)="buttonClick.emit()">
+        <i class="{{buttonPicto}}"></i>
+    </span>
+    <span *ngIf="!editable" class="label">
+        <span (click)="labelClick.emit()" [class.clickable]="isClickable()">{{label}}</span>
+        <span *ngIf="buttonPicto" class="button-picto clickable" (click)="buttonClick.emit()">
+            <i class="{{buttonPicto}}"></i>
+        </span>
+    </span>
+    <span>
+        <ng-content select="dropdown-menu"></ng-content>
+    </span>
+    <tool-tip *ngIf="tooltip">{{tooltip}}</tool-tip>
+</div>
+<div #childrentWrapper *ngIf="isOpen" class="content">
+    <ng-content></ng-content>
+</div>

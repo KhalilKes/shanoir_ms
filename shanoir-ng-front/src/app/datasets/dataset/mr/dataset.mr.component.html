@@ -1,0 +1,64 @@
+<!--
+Shanoir NG - Import, manage and share neuroimaging data
+Copyright (C) 2009-2019 Inria - https://www.inria.fr/
+Contact us on https://project.inria.fr/shanoir/
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see https://www.gnu.org/licenses/gpl-3.0.html
+-->
+
+<fieldset *ngIf="dataset">
+	<legend>Mr Dataset Data</legend>
+	<ol>
+		<li>
+			<label i18n="Mr Dataset detail|Mr Dataset echo time@@mrDatasetEchoTime">Echo Time</label>
+			<span class="right-col">
+				<span class="multi" *ngFor="let echoTime of dataset.echoTime">{{echoTime.echoTimeValue}}</span>
+			</span>
+		</li>
+		<li>
+			<label i18n="Mr Dataset detail|Mr Dataset flip angle@@mrDatasetFlipAngle">Flip Angle</label>
+			<span class="right-col">
+				<span class="multi" *ngFor="let flipAngle of dataset.flipAngle">{{flipAngle.flipAngleValue}}</span>
+			</span>
+		</li>
+		<li>
+			<label i18n="Mr Dataset detail|Mr Dataset inversion time@@mrDatasetInversionTime">Inversion Time</label>
+			<span class="right-col">
+				<span class="multi" *ngFor="let inversionTime of dataset.inversionTime">{{inversionTime.inversionTimeValue}}</span>
+			</span>
+		</li>
+		<li>
+			<label i18n="Mr Dataset detail|Mr Dataset quality procedure type@@mrDatasetQualityProcedureType">Quality Procedure Type</label>
+			<span class="right-col">
+				{{dataset.mrQualityProcedureType}}<!-- TODO : 'enum' -->
+			</span>
+		</li>
+		<li>
+			<label i18n="Mr Dataset detail|Mr Dataset repetition time id@@mrDatasetRepetitionTimeId">Repetition Time</label>
+			<span class="right-col">
+				<span class="multi" *ngFor="let repetitionTime of dataset.repetitionTime">{{repetitionTime.repetitionTimeValue}}</span>
+			</span>
+		</li>
+	</ol>
+</fieldset>
+<fieldset *ngIf="dataset">
+	<legend>Mr Dataset Metadata</legend>
+	<ol>
+		<li>
+			<label i18n="Mr Dataset detail|Mr Dataset nature@@mrDatasetNature">Mr Dataset Nature</label>
+			<span [ngSwitch]="mode">
+				<ng-template [ngSwitchCase]="'view'">{{natureLabel}}</ng-template>
+				<ng-template ngSwitchDefault>
+					<select-box [(ngModel)]="dataset.updatedMrMetadata.mrDatasetNature" [options]="natureOptions">
+					</select-box>
+				</ng-template>
+			</span>
+		</li>
+	</ol>
+</fieldset>

@@ -1,0 +1,7 @@
+:host() { display: block; margin-bottom: 25px; }
+
+form { border: none !important; background-color: transparent; }
+
+h2 { margin: 15px 0; }
+
+i { margin-right: 7px; color: var(--color-important); }

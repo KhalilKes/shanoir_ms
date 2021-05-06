@@ -1,0 +1,124 @@
+<!--
+Shanoir NG - Import, manage and share neuroimaging data
+Copyright (C) 2009-2019 Inria - https://www.inria.fr/
+Contact us on https://project.inria.fr/shanoir/
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see https://www.gnu.org/licenses/gpl-3.0.html
+-->
+
+<div #formContainer class="content-component">
+	<form *ngIf="form" [formGroup]="form" class="max-content" novalidate [class.disabled]="footerState.loading">
+		<div class="layout">
+			<span [ngSwitch]="mode">
+				<ng-template [ngSwitchCase]="'view'">
+					<h2 class="header command-zone"i18n="View coil|Title@@coilDetailViewTitle">Details on coil</h2>
+				</ng-template>
+				<ng-template [ngSwitchCase]="'edit'">
+					<h2 class="header command-zone"i18n="Edit coil|Title@@coilDetailEditTitle">Edit coil</h2>
+				</ng-template>
+				<ng-template [ngSwitchCase]="'create'">
+					<h2 class="header command-zone"i18n="Create coil|Title@@coilDetailCreateTitle">Create coil</h2>
+				</ng-template>
+			</span>
+			<fieldset>
+				<ol>
+					<li>
+						<label i18n="Coil detail|Coil name label@@examinationDetailName">Name</label>
+						<span class="right-col" [ngSwitch]="mode">
+							<ng-template [ngSwitchCase]="'view'">	
+								{{coil.name}}
+							</ng-template>
+							<ng-template ngSwitchDefault>
+								<input type="text" id="name" formControlName="name" [(ngModel)]="coil.name" />
+							</ng-template>
+						</span>
+					</li>
+					<li>
+						<label i18n="Coil detail|Serial Number label@@coilDetailSerialNumber">Serial Number</label>
+						<span class="right-col" [ngSwitch]="mode">
+							<ng-template [ngSwitchCase]="'view'">
+								{{coil.serialNumber}}
+							</ng-template>
+							<ng-template ngSwitchDefault>
+								<input type="text" id="serialNb" formControlName="serialNb" [(ngModel)]="coil.serialNumber" />
+							</ng-template>
+						</span>
+					</li>
+					<li>
+						<label i18n="Coil detail|Coil Type label@@CoilDetailCoilType">Coil Type</label>
+						<span class="right-col" [ngSwitch]="mode">
+							<ng-template [ngSwitchCase]="'view'">
+								{{coil.coilType}}
+							</ng-template> 
+								<ng-template ngSwitchDefault>
+								<select-box formControlName="coilType" [(ngModel)]="coil.coilType" [optionArr]="coilTypes">
+								</select-box>
+							</ng-template>
+						</span>
+					</li>
+					<li>
+						<label i18n="Coil detail|Coil date label@@CoilDetailNbChannels">Number of channels</label>
+						<span class="right-col" [ngSwitch]="mode">
+							<ng-template [ngSwitchCase]="'view'">
+								{{coil.numberOfChannels}} 
+							</ng-template>
+							<ng-template ngSwitchDefault>
+								<input type="text" id="nbChannel" formControlName="nbChannel" [(ngModel)]="coil.numberOfChannels" />
+							</ng-template>
+						</span>
+					</li>
+					<li>
+						<label i18n="Coil detail|Center label@@coilDetailCenter">Center</label>
+						<span class="right-col" [ngSwitch]="mode">
+							<ng-template [ngSwitchCase]="'view'">
+								<a [routerLink]="['/center/details/', coil.center?.id]">
+									{{coil.center?.name}}
+								</a> 
+							</ng-template>
+							<ng-template ngSwitchDefault>
+								<select-box
+										(onNewClick)="openNewCenter()" 
+										[newDisabled]="form.get('center').disabled"
+										formControlName="center" 
+										[ngModel]="coil.center"  
+										(ngModelChange)="updateManufList($event)"
+										[optionArr]="centers">
+								</select-box>
+								<label *ngIf="hasError('center', ['required'])" class="form-validation-alert" i18n="Coil detail|Center required error@@coilDetailCenterRequiredError">Center is required!</label>
+							</ng-template>
+						</span>
+					</li>
+					<li>
+						<label i18n="Coil detail|Coil acquisition Equipment Model label@@examinationDetailCoilAcquisitionEquipmentModel">Acquisition Equipment Model</label>
+						<span class="right-col" [ngSwitch]="mode">
+							<ng-template [ngSwitchCase]="'view'">
+								<a [routerLink]="['/manufacturer-model/details/', coil.manufacturerModel?.id]">
+									{{coil.manufacturerModel | manufModelLabel}}
+								</a>
+							</ng-template>
+							<ng-template ngSwitchDefault>
+								<select-box formControlName="acquiEquipModel" [(ngModel)]="coil.manufacturerModel" (onNewClick)="openNewManufModel()" [newDisabled]="form.get('acquiEquipModel').disabled" [optionArr]="manufModels" [pipe]="manufModelPipe">
+								</select-box>
+								<label *ngIf="hasError('manufacturerModel', ['required'])" class="form-validation-alert" i18n="Coil detail|Manufacturer model required error@@coilDetailManufModelRequiredError">Acquisition Equipment model is required!</label>
+							</ng-template>
+						</span>
+					</li> 
+				</ol>
+			</fieldset>
+			<form-footer
+				[state]="footerState"
+				(save)="save()"
+				(edit)="goToEdit()"
+                (delete) = "delete()"
+				(cancel)="goToView()"
+				(back)="goBack()"
+			></form-footer>
+		</div>
+	</form>
+</div>

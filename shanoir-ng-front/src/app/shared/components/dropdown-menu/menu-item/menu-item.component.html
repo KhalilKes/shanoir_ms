@@ -1,0 +1,46 @@
+<!--
+Shanoir NG - Import, manage and share neuroimaging data
+Copyright (C) 2009-2019 Inria - https://www.inria.fr/
+Contact us on https://project.inria.fr/shanoir/
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see https://www.gnu.org/licenses/gpl-3.0.html
+-->
+
+<li class="menu-item" 
+    [class.opened]="init && opened" 
+    [class.closed]="!opened" 
+    [class.animate]="overflow"
+    [class.disabled]="disabled"
+    >
+    <!-- [class.disabled]="!hasChildren && boolVar == undefined && (!link || link=='')" -->
+    <span 
+        *ngIf="hasChildren"
+        class="label"
+        (click)="toggle()"
+        ><i class="{{awesome}}"></i>{{label}}
+        <span class="arrow">&nbsp;&#9656;</span>
+    </span>
+    <span 
+        *ngIf="!hasChildren && boolVar != undefined"
+        class="label"
+        ><i class="{{awesome}}"></i>{{label}}
+        <span class="arrow" *ngIf="boolVar != undefined && boolVar">&nbsp;&#x2713;</span>
+        <span class="arrow" *ngIf="boolVar != undefined && !boolVar">&nbsp;&#x2717;</span>
+    </span>
+    <span 
+        *ngIf="!hasChildren && boolVar == undefined"
+        [routerLink]="link? link : null" 
+        [routerLinkActive]="link? 'active' : 'unactive'"
+        class="label" 
+        ><i class="{{awesome}}"></i>{{label}}
+    </span>
+    <ul #contentWrapper class="sub-content" *ngIf="opened" [@menuSlideRight]="opened" [hidden]="!init">
+        <div class="sub-sub-content"><ng-content></ng-content></div>
+    </ul>
+</li>

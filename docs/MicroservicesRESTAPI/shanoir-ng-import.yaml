@@ -1,0 +1,168 @@
+# Shanoir NG - Import, manage and share neuroimaging data
+# Copyright (C) 2009-2019 Inria - https://www.inria.fr/
+# Contact us on https://project.inria.fr/shanoir/
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see https://www.gnu.org/licenses/gpl-3.0.html
+
+swagger: '2.0'
+info:
+  title: Shanoir NG Import Microservice
+  description: Microservice API for Shanoir NG import
+  version: 0.0.1
+basePath: /importer
+produces:
+  - application/json
+paths:
+  /upload/:
+    post:
+      tags:
+        - Upload files
+      summary: Upload files
+      description: Upload files
+      operationId: uploadFiles
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - in: formData
+          name: files
+          description: Files to upload
+          required: true
+          type: file
+      responses:
+        '200':
+          description: success returns file path
+        '400':
+          description: Invalid input / Bad Request
+        '409':
+          description: Already exists - conflict
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /upload_dicom/:
+    post:
+      tags:
+        - Upload one DICOM .zip file
+      summary: Upload one DICOM .zip file
+      description: Upload DICOM .zip file
+      operationId: uploadDicomZipFile
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - in: formData
+          name: dicomZipFile
+          description: DICOM .zip file to upload
+          required: true
+          type: file
+      responses:
+        '200':
+          description: success returns file path
+        '400':
+          description: Invalid input / Bad Request
+        '409':
+          description: Already exists - conflict
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: '#/definitions/Error'
+  /select_series/:
+    post:
+      tags:
+        - Select series
+      summary: Select series
+      description: Select series
+      operationId: selectSeries
+      consumes:
+        - application/json
+      parameters:
+        - name: selectedSeries
+          in: body
+          description: selected series
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Serie'
+      responses:
+        '200':
+          description: series selected
+        '400':
+          description: Invalid input / Bad Request
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Serie:
+    type: object
+    properties:
+      selected:
+        type: boolean
+      seriesInstanceUID:
+        type: string
+      modality:
+        type: string
+      protocolName:
+        type: string
+      seriesDescription:
+        type: string
+      seriesDate:
+        type: string
+        format: date
+      seriesNumber:
+        type: integer
+        format: int32
+      numberOfSeriesRelatedInstances:
+        type: integer
+        format: int32
+      sopClassUID:
+        type: string
+      equipment:
+        type: object
+        items:
+          $ref: '#/definitions/EquipmentDicom'
+      isCompressed:
+        type: boolean
+      nonImages:
+        type: array
+        items:
+          type: object
+      nonImagesNumber:
+        type: integer
+        format: int32
+      images:
+        type: array
+        items:
+          type: string
+      imagesNumber:
+        type: integer
+        format: int32
+  EquipmentDicom:
+    type: object
+    properties:
+      manufacturer:
+        type: string
+      manufacturerModelName:
+        type: string
+      deviceSerialNumber:
+        type: string
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
