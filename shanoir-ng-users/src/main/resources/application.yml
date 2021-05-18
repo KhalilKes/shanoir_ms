@@ -67,7 +67,7 @@ front.server:
 keycloak:
   # attention: this config for the token issuer needs to match the domain of the frontend
   # used for token creation AND the server url needs to be known from inside the docker network:
-  auth-server-url: ${SHANOIR_URL_SCHEME}://${SHANOIR_URL_HOST}:8180/auth
+  auth-server-url: http://${SHANOIR_URL_HOST}:8180/auth
   cors: true
   realm: shanoir-ng
   resource: shanoir-ng-users
@@ -88,7 +88,7 @@ keycloak:
         - /role/*
 ##### Keycloak admin client, that ms users can directly communicate with keycloak #####
 kc.admin.client:
-  server.url: https://${SHANOIR_PREFIX}keycloak:8443/auth
+  server.url: http://${SHANOIR_URL_HOST}:8180/auth
   realm: master
   client.id: admin-cli
 # logging configuration
